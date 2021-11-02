@@ -1,2 +1,2 @@
-# NoughtsAndCrosses
-A repository for a noughts and crosses game. 
+# SpaceMercenary
+A repository for a space arcade game. 
