@@ -1,14 +1,30 @@
+from typing_extensions import Unpack
 import arcade
+
+# Reference code
 
 # argument/s for classes are it's parent/s (inheritance)
 # arguments added when creating an object are for the object
 
+# Sprite sizing
 SPRITE_SCALING = 0.5
+
+# Screen
 SCREEN_WIDTH = 500
 SCREEN_HEIGHT = 500
 SCREEN_TITLE = "SPACE MERCENARY"
+
+# Movement
 MOVEMENT_SPEED = 5
 
+# Shooting
+LASER_SCALING = 0.8
+SHOOT_SPEED = 15
+LASER_SPEED = 12
+# BULLET_DAMAGE = 1
+
+# Layer name bullets
+LAYER_NAME_LASERS = "Lasers"
 
 class Player(arcade.Sprite):
     """The Player class"""
@@ -37,11 +53,19 @@ class game(arcade.Window):
         # call parent class constructor
         super().__init__(width, height, title)
 
+        # background variable
+        self.background = None
+
         # list containing players
         self.player_list = None
 
         # set background colour
-        arcade.set_background_color(arcade.color.AMAZON)
+        arcade.set_background_color(arcade.color.BLACK)
+
+        # Shooting initialisation
+        self.can_shoot = False
+        self.shoot_timer = 0
+        self.shoot_pressed = False
     
     def setup(self):
         """Setup game, initialise variables"""
@@ -49,17 +73,29 @@ class game(arcade.Window):
         # player list
         self.player_list = arcade.SpriteList()
 
+        # setup shooting
+        self.can_shoot = True
+        self.shoot_timer = 0
+
+        # add laser sprint list to the scene
+
         # setup player
-        self.player_sprite = Player(r"C:\Users\pdaly\Documents\Projects\SpaceMercenary\rocket.PNG", SPRITE_SCALING)
+        self.player_sprite = Player(r"C:\Users\pdaly\Documents\Projects\SpaceMercenary\images\rocket.PNG", SPRITE_SCALING)
         self.player_sprite.center_x = 50
         self.player_sprite.center_y = 50
         self.player_list.append(self.player_sprite)
-    
+
+        # set background
+        self.background = arcade.load_texture(r"C:\Users\pdaly\Documents\Projects\SpaceMercenary\images\spaceBG.jpg")
+
     def on_draw(self):
         """Render screen"""
 
         # This command has to happen before we start drawing
         arcade.start_render()
+        
+        # Draw the background
+        arcade.draw_lrwh_rectangle_textured(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, self.background)
 
         # Draw all the sprites.
         self.player_list.draw()
@@ -70,6 +106,16 @@ class game(arcade.Window):
         # Move the player
         self.player_list.update()
 
+        # check if player has shot
+        if self.can_shoot:
+            if self.shoot_pressed:
+                arcade.play_sound(self.shoot_sound)
+                bullet = arcade.sprite("C:\Users\pdaly\Documents\Projects\SpaceMercenary\images\laserFinal.PNG", LASER_SCALING)
+                # bullet can only go up
+                bullet.change_y = LASER_SPEED
+                bullet.center_x = self.player_sprite.center_x
+                bullet.center_y = self.player_sprite.center_y
+                self.scene.add_sprite()
     def on_key_press(self, key, modifiers):
         """Called whenever a key is pressed. """
 
@@ -82,9 +128,12 @@ class game(arcade.Window):
             self.player_sprite.change_x = -MOVEMENT_SPEED
         elif key == arcade.key.RIGHT:
             self.player_sprite.change_x = MOVEMENT_SPEED
+        
+        if key == arcade.key.SPACE:
+            self.shoot_pressed = True
 
     def on_key_release(self, key, modifiers):
-        """Called when the user releases a key. """
+        """ Called when the user releases a key. """
 
         # If a player releases a key, zero out the speed.
         # This doesn't work well if multiple keys are pressed.
@@ -95,6 +144,8 @@ class game(arcade.Window):
         elif key == arcade.key.LEFT or key == arcade.key.RIGHT:
             self.player_sprite.change_x = 0
 
+        if key == arcade.key.SPACE:
+            self.shoot_pressed = False
 def main():
     """The Main function"""
     #initialise the game and run it
