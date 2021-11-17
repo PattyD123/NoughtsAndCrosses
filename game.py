@@ -70,14 +70,13 @@ class game(arcade.Window):
     def setup(self):
         """Setup game, initialise variables"""
 
-        # player list
+        # sprite lists
         self.player_list = arcade.SpriteList()
+        self.laser_list = arcade.SpriteList()
 
         # setup shooting
         self.can_shoot = True
         self.shoot_timer = 0
-
-        # add laser sprint list to the scene
 
         # setup player
         self.player_sprite = Player(r"C:\Users\pdaly\Documents\Projects\SpaceMercenary\images\rocket.PNG", SPRITE_SCALING)
@@ -97,8 +96,9 @@ class game(arcade.Window):
         # Draw the background
         arcade.draw_lrwh_rectangle_textured(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, self.background)
 
-        # Draw all the sprites.
+        # Draw all the sprites
         self.player_list.draw()
+        self.laser_list.draw()
 
     def on_update(self, delta_time):
         """Movement and game logic"""
@@ -110,12 +110,20 @@ class game(arcade.Window):
         if self.can_shoot:
             if self.shoot_pressed:
                 arcade.play_sound(self.shoot_sound)
-                bullet = arcade.sprite("C:\Users\pdaly\Documents\Projects\SpaceMercenary\images\laserFinal.PNG", LASER_SCALING)
+                laser = arcade.Sprite(r"C:\Users\pdaly\Documents\Projects\SpaceMercenary\images\laserFinal.PNG", LASER_SCALING)
                 # bullet can only go up
-                bullet.change_y = LASER_SPEED
-                bullet.center_x = self.player_sprite.center_x
-                bullet.center_y = self.player_sprite.center_y
-                self.scene.add_sprite()
+                laser.change_y = LASER_SPEED
+                laser.center_x = self.player_sprite.center_x
+                laser.center_y = self.player_sprite.center_y
+                self.laser_list.append(laser)
+        
+        # loop through lasers
+        for laser in self.laser_list:
+            # check if laser hit something
+
+            # check if laser exited map
+            if laser.bottom > self.width or laser.top < 0:
+                laser.remove_from_sprite_lists()
     def on_key_press(self, key, modifiers):
         """Called whenever a key is pressed. """
 
