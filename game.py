@@ -1,10 +1,10 @@
-from typing_extensions import Unpack
+# from typing_extensions import Unpack
 import arcade
 
 # Reference code
 
 # argument/s for classes are it's parent/s (inheritance)
-# arguments added when creating an object are for the object
+# argument/s added when creating an object are for the object
 
 # Sprite sizing
 SPRITE_SCALING = 0.5
@@ -20,7 +20,7 @@ MOVEMENT_SPEED = 5
 # Shooting
 LASER_SCALING = 0.8
 SHOOT_SPEED = 15
-LASER_SPEED = 12
+LASER_SPEED = 8
 # BULLET_DAMAGE = 1
 
 # Layer name bullets
@@ -109,14 +109,18 @@ class game(arcade.Window):
         # check if player has shot
         if self.can_shoot:
             if self.shoot_pressed:
-                arcade.play_sound(self.shoot_sound)
-                laser = arcade.Sprite(r"C:\Users\pdaly\Documents\Projects\SpaceMercenary\images\laserFinal.PNG", LASER_SCALING)
+                # arcade.play_sound(self.shoot_sound)
+                laser = arcade.Sprite(r"C:\Users\pdaly\Documents\Projects\SpaceMercenary\images\laser5.PNG", LASER_SCALING)
                 # bullet can only go up
                 laser.change_y = LASER_SPEED
                 laser.center_x = self.player_sprite.center_x
                 laser.center_y = self.player_sprite.center_y
                 self.laser_list.append(laser)
+                self.shoot_pressed = False
         
+        # update lasers
+        self.laser_list.update()
+
         # loop through lasers
         for laser in self.laser_list:
             # check if laser hit something
