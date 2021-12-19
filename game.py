@@ -59,6 +59,9 @@ class game(arcade.Window):
         # list containing players
         self.player_list = None
 
+        # list containing aliens
+        self.alient_list = None
+
         # set background colour
         arcade.set_background_color(arcade.color.BLACK)
 
@@ -73,6 +76,7 @@ class game(arcade.Window):
         # sprite lists
         self.player_list = arcade.SpriteList()
         self.laser_list = arcade.SpriteList()
+        self.alient_list = arcade.SpriteList()
 
         # setup shooting
         self.can_shoot = True
@@ -84,6 +88,11 @@ class game(arcade.Window):
         self.player_sprite.center_y = 50
         self.player_list.append(self.player_sprite)
 
+        # create initial enemy
+        alien = arcade.Sprite(r"C:\Users\pdaly\Documents\Projects\SpaceMercenary\images\alien3.PNG", SPRITE_SCALING)
+        alien.center_x = 100
+        alien.center_y = 100
+        self.alient_list.append(alien)
         # set background
         self.background = arcade.load_texture(r"C:\Users\pdaly\Documents\Projects\SpaceMercenary\images\spaceBG.jpg")
 
@@ -99,6 +108,7 @@ class game(arcade.Window):
         # Draw all the sprites
         self.player_list.draw()
         self.laser_list.draw()
+        self.alient_list.draw()
 
     def on_update(self, delta_time):
         """Movement and game logic"""
